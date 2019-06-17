@@ -28,7 +28,7 @@ export const validation = {
  * @apiParam (Body) {String} password User password.
  *
  * @apiSuccess {Number} status Status of the Request.
- * @apiSuccess {String} _id User _id.
+ * @apiSuccess {String} id User id.
  * @apiSuccess {String} token Authentication token.
  *
  * @apiSuccessExample Success-Response:
@@ -48,5 +48,10 @@ export const validation = {
  *  }
  */
 export async function login(req, res, next) {
-    res.status(HTTPStatus.OK).json(req.user.toAuthJSON());
+    try {
+        res.status(HTTPStatus.OK).json(req.user.toAuthJSON());
+    } catch (e) {
+        e.status = HTTPStatus.BAD_REQUEST;
+        return next(e);
+    }
 }

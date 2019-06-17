@@ -36,21 +36,23 @@ import { getCityWeather } from "../services/city";
  *  }
  */
 export async function search(req, res, next) {
-    console.log("Searching for ", req.query.q);
+    const q = req.query.q;
     const user = req.user;
+
+    console.log("Searching for ", q);
 
     let cities = await City.findAll({
         attributes: [[Sequelize.fn("DISTINCT", Sequelize.col("name")), "name"]],
         where: {
             name: {
-                [Op.iLike]: `%${req.query.q}%`,
+                [Op.iLike]: `%${q}%`,
                 [Op.ne]: "",
                 [Op.notIn]: user.cities
             }
         },
         limit: 8
     });
-    res.status(HTTPStatus.OK).json(cities);
+    res.status(HTTPStatus.OK).json({ q, cities });
 }
 
 /**
